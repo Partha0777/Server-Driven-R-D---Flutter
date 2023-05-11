@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -37,7 +39,91 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: const Center(),
+      body: body(),
+    );
+  }
+
+  Widget body(){
+    return Column(
+      children: [
+        profile(ImagePosition.Right)
+      ],
+    );
+  }
+
+  Widget profile(ImagePosition imagePosition) {
+    return Column(children: [
+      if (imagePosition == ImagePosition.Center) ...[
+        Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              profileImage(0),
+              profileContent(0,CrossAxisAlignment.center),
+            ],
+          ),
+        )
+      ] else ...[
+        Row(
+          children: [
+            if (ImagePosition.Left == imagePosition) ...[
+              profileImage(2),
+              profileContent(8,CrossAxisAlignment.start),
+            ] else ...[
+              profileContent(8,CrossAxisAlignment.start),
+              profileImage(2),
+            ]
+          ],
+        )
+      ]
+    ]);
+  }
+
+  Widget profileImage(int flexValue){
+    return Expanded(
+      flex: flexValue,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8,left: 8, top: 16, bottom: 16),
+          child: Container(
+            height: 100,
+                  width: 100,
+                  child: CircleAvatar(
+                      backgroundImage: AssetImage("assets/flutter_Dash.jpeg")))),
+        );
+
+  }
+
+  Widget profileContent(int flexValue, CrossAxisAlignment crossAxisAlignment){
+    return Expanded(
+      flex: flexValue,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: crossAxisAlignment,
+          children: const [
+            Text("Partha",style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),textAlign: TextAlign.left),
+            Text("Flutter Developer",style: TextStyle(fontSize: 20,fontWeight: FontWeight.normal),textAlign: TextAlign.left)
+          ],
+        ),
+      ),
     );
   }
 }
+
+
+
+enum ImagePosition{
+  Left,
+  Right,
+  Center
+}
+
+enum WidgetPosition{
+  Left,
+  Right,
+  Center
+}
+
+
+
