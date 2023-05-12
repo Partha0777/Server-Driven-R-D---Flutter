@@ -2,9 +2,13 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 
+import 'SDAdapter.dart';
+
 void main() {
   runApp(const MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -14,7 +18,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SDUI',
       theme: ThemeData(
-
         primarySwatch: Colors.blue,
       ),
       home: const MyHomePage(title: 'SDUI'),
@@ -35,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -46,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget body(){
     return Column(
       children: [
-        profile(ImagePosition.Right)
+        SDAdapter()
       ],
     );
   }
@@ -109,7 +113,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  Widget contentList(){
+    return ListView.builder(itemCount: 5,itemBuilder: (BuildContext context, int index){
+      return Container();
+    });
+  }
 }
+
 
 
 
