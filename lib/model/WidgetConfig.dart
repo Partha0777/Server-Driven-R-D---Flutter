@@ -1,8 +1,9 @@
 class WidgetConfig{
    Elements widgetType;
    String value;
+   int flex = 0;
    List<WidgetConfig> childWidgets;
-  WidgetConfig(this.widgetType, this.childWidgets, this.value);
+  WidgetConfig(this.widgetType, this.childWidgets, this.value, {this.flex = 0});
 }
 
 enum Elements {
@@ -11,5 +12,6 @@ enum Elements {
   Container,
   Text,
   Image,
-  Expand
+  Expand,
+  Center
 }

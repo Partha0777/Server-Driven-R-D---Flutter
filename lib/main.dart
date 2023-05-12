@@ -84,6 +84,12 @@ class _MyHomePageState extends State<MyHomePage> {
     ]);
   }
 
+  Widget testWidget(){
+    return Center(
+      child: Text("Hello"),
+    );
+  }
+
   Widget profileImage(int flexValue){
     return Expanded(
       flex: flexValue,
