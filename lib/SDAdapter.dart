@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sdui_flutter/model/WidgetConfig.dart';
 
+int widgetPosition = 1;
+
 Widget SDAdapter() {
   List<WidgetConfig> widgetList = [];
   List<WidgetConfig> contentWidget = [];
@@ -9,35 +11,127 @@ Widget SDAdapter() {
   List<WidgetConfig> profileContentHolder = [];
   List<WidgetConfig> profileContentHolder1 = [];
   List<WidgetConfig> profileContent = [];
-
   profileImage
-      .add(WidgetConfig(Elements.Image, [], "assets/flutter_Dash.jpeg"));
+      .add(WidgetConfig(Elements.Image, [], value: "assets/flutter_Dash.jpeg"));
 
-  profileContent.add(WidgetConfig(Elements.Text, [], "Partha"));
-  profileContent.add(WidgetConfig(Elements.Text, [], "Flutter developer"));
-
-  profileContentHolder.add(WidgetConfig(Elements.Column, profileContent, ""));
   // profileContentHolder1.add(WidgetConfig(Elements.Column, profileImage, ""));
 
-  contentProfile
-      .add(WidgetConfig(Elements.Expand, profileContentHolder, "", flex: 8));
-  contentProfile.add(WidgetConfig(Elements.Expand, profileImage, "", flex: 2));
+  profileContent.add(WidgetConfig(Elements.Sizedbox, [], height: 20));
+  profileContent
+      .add(WidgetConfig(Elements.Text, [], value: "Flutter developer"));
+  profileContent.add(WidgetConfig(Elements.Sizedbox, [], height: 20));
+  profileContent.add(WidgetConfig(Elements.Text, [], value: "Partha"));
+  profileContent.add(WidgetConfig(Elements.Sizedbox, [], height: 20));
+  profileContent
+      .add(WidgetConfig(Elements.Column, profileImage, value: "Partha"));
 
-  //Row
-  contentWidget.add(WidgetConfig(Elements.Row, contentProfile, ""));
+  profileContentHolder1.add(WidgetConfig(Elements.Column, profileContent));
 
-  //Column
+  profileContentHolder
+      .add(WidgetConfig(Elements.Expand, profileContentHolder1, flex: 5));
+  profileContentHolder
+      .add(WidgetConfig(Elements.Expand, profileContentHolder1, flex: 5));
 
-  widgetList.add(WidgetConfig(Elements.Column, contentWidget, ""));
-  contentWidget.add(WidgetConfig(Elements.Row, [WidgetConfig(Elements.Expand, profileImage, "",flex: 5),WidgetConfig(Elements.Expand, profileImage, "",flex: 5)], ""));
-  contentWidget.add(WidgetConfig(Elements.Column, [WidgetConfig(Elements.Column, profileImage, ""),WidgetConfig(Elements.Column, profileImage, "")], ""));
+  contentProfile.add(WidgetConfig(Elements.Center, profileImage, flex: 2));
+  contentProfile.add(WidgetConfig(Elements.Row, profileContentHolder, flex: 8));
 
-  return buildChild(widgetList);
+  contentWidget.add(WidgetConfig(Elements.Sizedbox,[],height: 20));
+  contentWidget.add(WidgetConfig(Elements.Column, contentProfile));
+
+  widgetList.add(WidgetConfig(Elements.Column, contentWidget));
+
+  return baseWidget(widgetList);
 }
+
+
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+
+Widget baseWidget(List<WidgetConfig> widgetList) {
+  Widget widgetBase = Column();
+  for (WidgetConfig widget in widgetList) {
+    widgetBase = customWidget(widget);
+  }
+  return widgetBase;
+}
+
+
+List<Widget> customWidgetList(List<WidgetConfig> widgetList) {
+  List<Widget> chilledList = [];
+  for (WidgetConfig widget in widgetList) {
+    chilledList.add(customWidget(widget));
+  }
+  return chilledList;
+}
+
+
+Widget customWidget(WidgetConfig widget) {
+  print("$widgetPosition ${widget.widgetType}");
+
+  widgetPosition++;
+  switch (widget.widgetType) {
+    case Elements.Text:
+      return Text(widget.value);
+
+    case Elements.Image:
+      return Image(image: AssetImage(widget.value));
+
+    case Elements.Column:
+      return Column(children: customWidgetList(widget.childWidgets));
+
+    case Elements.Row:
+      return Row(children: customWidgetList(widget.childWidgets));
+
+    case Elements.Expand:
+      return Expanded(
+          flex: widget.flex, child: baseWidget(widget.childWidgets));
+
+    case Elements.Center:
+      return Center(child: baseWidget(widget.childWidgets));
+
+    case Elements.CircleAvatar:
+      return CircleAvatar(backgroundImage: AssetImage(widget.value));
+
+    case Elements.Sizedbox:
+      return SizedBox(width: widget.width, height: widget.height);
+
+    case Elements.Padding:
+      return Padding(
+          padding: EdgeInsets.only(
+              top: widget.top,
+              left: widget.left,
+              right: widget.right,
+              bottom: widget.bottom));
+
+    case Elements.FittedBox:
+      return FittedBox(child: baseWidget(widget.childWidgets));
+
+    case Elements.Wrap:
+      return Wrap(children: customWidgetList(widget.childWidgets));
+
+    default:
+      return Column();
+  }
+}
+
+/*-----------------------------------------------------------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Widget buildChild(List<WidgetConfig> widgetList) {
   List<Widget> chilledList = [];
-
   for (WidgetConfig widget in widgetList) {
     switch (widget.widgetType) {
       case Elements.Text:
