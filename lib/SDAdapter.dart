@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:sdui_flutter/model/CustomWidget.dart';
 import 'package:sdui_flutter/model/WidgetConfig.dart';
 
 int widgetPosition = 1;
@@ -40,38 +43,82 @@ Widget SDAdapter() {
 
   widgetList.add(WidgetConfig(Elements.Column, contentWidget));
 
-  return baseWidget(widgetList);
+
+
+  final jsonData = '{\"widgetType\":\"column\",\"value\":\"\",\"children\":[{\"widgetType\":\"column\",\"value\":\"\",\"children\":[{\"widgetType\":\"image\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[]},{\"widgetType\":\"text\",\"value\":\"Partha\",\"children\":[]},{\"widgetType\":\"row\",\"value\":\"\",\"children\":[{\"widgetType\":\"expanded\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[{\"widgetType\":\"image\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[]}]},{\"widgetType\":\"expanded\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[{\"widgetType\":\"image\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[]}]}]}]}]}';
+
+
+
+
+  var parsedJson = jsonDecode(jsonData);
+  var customJson = CustomWidget.fromJson(parsedJson);
+
+  List<CustomWidget> widgets = [customJson];
+  return baseWidget(widgets);
 }
 
 
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
-
-Widget baseWidget(List<WidgetConfig> widgetList) {
+//Child
+Widget baseWidget(List<CustomWidget> widgetList) {
   Widget widgetBase = Column();
-  for (WidgetConfig widget in widgetList) {
+  for (CustomWidget widget in widgetList) {
     widgetBase = customWidget(widget);
   }
   return widgetBase;
 }
 
-
-List<Widget> customWidgetList(List<WidgetConfig> widgetList) {
-  List<Widget> chilledList = [];
-  for (WidgetConfig widget in widgetList) {
-    chilledList.add(customWidget(widget));
+//Children
+List<Widget> customWidgetList(List<CustomWidget> widgetList) {
+  List<Widget> childWidget = [];
+  for (CustomWidget widget in widgetList) {
+    childWidget.add(customWidget(widget));
   }
-  return chilledList;
+
+
+  return childWidget;
 }
 
 
-Widget customWidget(WidgetConfig widget) {
+Widget customWidget(CustomWidget widget) {
   print("$widgetPosition ${widget.widgetType}");
 
   widgetPosition++;
   switch (widget.widgetType) {
-    case Elements.Text:
+    case "text":
+      return Text(widget.value);
+
+    case "image":
+      return Image(image: AssetImage(widget.value));
+
+    case "column":
+      return Column(children: customWidgetList(widget.children));
+
+    case "row":
+      return Row(children: customWidgetList(widget.children));
+
+    case "expanded":
+      return Expanded(flex: 5,child: baseWidget(widget.children),);
+
+    default:
+      return Column();
+  }
+}
+
+
+
+
+
+
+
+/*Widget customWidget(CustomWidget widget) {
+  print("$widgetPosition ${widget.widgetType}");
+
+  widgetPosition++;
+  switch (widget.widgetType) {
+    case Elements.Text.toString():
       return Text(widget.value);
 
     case Elements.Image:
@@ -113,7 +160,7 @@ Widget customWidget(WidgetConfig widget) {
     default:
       return Column();
   }
-}
+}*/
 
 /*-----------------------------------------------------------------------------------------------------------*/
 
