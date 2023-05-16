@@ -45,16 +45,14 @@ Widget SDAdapter() {
 
 
 
-  final jsonData = '{\"widgetType\":\"column\",\"value\":\"\",\"children\":[{\"widgetType\":\"column\",\"value\":\"\",\"children\":[{\"widgetType\":\"image\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[]},{\"widgetType\":\"text\",\"value\":\"Partha\",\"children\":[]},{\"widgetType\":\"row\",\"value\":\"\",\"children\":[{\"widgetType\":\"expanded\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[{\"widgetType\":\"image\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[]}]},{\"widgetType\":\"expanded\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[{\"widgetType\":\"image\",\"value\":\"assets/flutter_Dash.jpeg\",\"children\":[]}]}]}]}]}';
-
+  final jsonData = '{ "widgetType":"column", "value":"", "children":[ { "widgetType":"column", "value":"", "children":[ { "widgetType":"image", "value":"assets/flutter_Dash.jpeg", "children":[ ] }, { "widgetType":"text", "value":"Partha", "children":[ ] }, { "widgetType":"row", "value":"", "children":[ { "widgetType":"expanded", "value":"assets/flutter_Dash.jpeg", "child":{ "widgetType":"image", "value":"assets/flutter_Dash.jpeg", "children":[ ] } }, { "widgetType":"expanded", "value":"assets/flutter_Dash.jpeg", "child":{ "widgetType":"column", "value":"assets/flutter_Dash.jpeg", "children":[ { "widgetType":"row", "value":"", "children":[ { "widgetType":"expanded", "value":"assets/flutter_Dash.jpeg", "child":{ "widgetType":"image", "value":"assets/flutter_Dash.jpeg", "children":[ ] } }, { "widgetType":"expanded", "value":"assets/flutter_Dash.jpeg", "child":{ "widgetType":"image", "value":"assets/flutter_Dash.jpeg", "children":[ ] } } ] } ] } } ] } ] } ] }';
 
 
 
   var parsedJson = jsonDecode(jsonData);
   var customJson = CustomWidget.fromJson(parsedJson);
 
-  List<CustomWidget> widgets = [customJson];
-  return baseWidget(widgets);
+  return customWidget(customJson);
 }
 
 
@@ -62,7 +60,7 @@ Widget SDAdapter() {
 /*-----------------------------------------------------------------------------------------------------------*/
 
 //Child
-Widget baseWidget(List<CustomWidget> widgetList) {
+/*Widget baseWidget(List<CustomWidget> widgetList) {
   Widget widgetBase = Column();
   for (CustomWidget widget in widgetList) {
     widgetBase = customWidget(widget);
@@ -79,7 +77,7 @@ List<Widget> customWidgetList(List<CustomWidget> widgetList) {
 
 
   return childWidget;
-}
+}*/
 
 
 Widget customWidget(CustomWidget widget) {
@@ -94,13 +92,16 @@ Widget customWidget(CustomWidget widget) {
       return Image(image: AssetImage(widget.value));
 
     case "column":
-      return Column(children: customWidgetList(widget.children));
+          List<Widget> children = widget.children.map((e) => customWidget(e)).toList();
+      return Column(children: children);
 
     case "row":
-      return Row(children: customWidgetList(widget.children));
+      List<Widget> children = widget.children.map((e) => customWidget(e)).toList();
+      return Row(children: children);
 
     case "expanded":
-      return Expanded(flex: 5,child: baseWidget(widget.children),);
+      Widget child = widget.child == null ? const SizedBox() : customWidget(widget.child!);
+      return Expanded(flex: 5,child: child);
 
     default:
       return Column();
